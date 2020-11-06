@@ -10,7 +10,7 @@ const questions = [
   {
     question: 'What is the best JavaScript framework for front-end?',
     answers: ['React', 'Angular', 'Vue', 'VanillaJS'],
-    correctAnswer: 0
+    correctAnswer: 3
   },
   {
     question: 'What is the best JavaScript framework for back-end?',
@@ -24,8 +24,8 @@ const questions = [
   },
   {
     question: 'Who invented JavaScript?',
-    answers: ['James Gosling', 'Bjarne Stroustrup', 'Brendan Eich', 'Graydon Hoare'],
-    correctAnswer: 2
+    answers: ['Brendan Eich', 'Bjarne Stroustrup', 'James Gosling', 'Graydon Hoare'],
+    correctAnswer: 0
   },
 ]
 
@@ -77,7 +77,7 @@ app.post('/answer/:index', (req,res) =>{
   })
 })
 
-
+ 
 app.get('/help/friend', (req, res) => {
 
   if(callAFriendUsed) {
@@ -95,6 +95,52 @@ app.get('/help/friend', (req, res) => {
     text: doesFriendKnowAnswer ? `Hmmm i think correct answer is ${question.answers[question.correctAnswer]}` : `Hmmm i can't help You, do it on Your own risk mate...`
   })
 })
+
+ 
+app.get('/help/fiftyfifty', (req, res) => {
+
+  if(fiftyFiftyUsed) {
+   return res.json({
+     text: 'This lifeline has been used already.'
+   })
+  }
+
+  fiftyFiftyUsed = true;
+
+  const question = questions[goodAnswers];
+
+
+  const answersCopy = question.answers.filter((s, index) => (
+    index !== question.correctAnswer
+));
+
+answersCopy.splice(~~(Math.random() * answersCopy.length), 1);
+
+  res.json({
+   answersToRemove: answersCopy,
+  })
+})
+
+app.get('/help/audience', (req, res) => {
+  const chart = [9,21,25,45];
+
+  for(let i = chart.length -1; i > 0; i--){
+     const change = Math.floor(Math.random() * 20 - 10);
+
+     chart[i] += change;
+     chart[i -1] -= change;
+  }
+
+  const question = questions[goodAnswers];
+  const {correctAnswer} = question;
+
+  [chart[3], chart[correctAnswer]] = [chart[correctAnswer], chart[3]];
+
+  res.json({
+      chart,
+  });
+})
+
 
 
 }
