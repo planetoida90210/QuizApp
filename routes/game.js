@@ -2,9 +2,9 @@ function gameRoutes(app) {
   
 let goodAnswers = 0;
 let isGameOver = false;
-let callToAFriendUsed = false;
-let questionToTheCrowdUsed = false;
-let halfOnHalfUsed = false;
+let callAFriendUsed = false;
+let askTheAudienceUsed = false;
+let fiftyFiftyUsed = false;
 
 const questions = [
   {
@@ -31,9 +31,7 @@ const questions = [
 
 app.get('/question', (req,res) => {
   if(goodAnswers === questions.length){
-   
     res.json({
-     
       winner: true,
     })
   }
@@ -69,7 +67,7 @@ app.post('/answer/:index', (req,res) =>{
   if(isGoodAnswer){
     goodAnswers++;
   }else{
-    gameOver = true;
+    isGameOver = true;
   }
 
 
@@ -78,6 +76,26 @@ app.post('/answer/:index', (req,res) =>{
     goodAnswers,
   })
 })
+
+
+app.get('/help/friend', (req, res) => {
+
+  if(callAFriendUsed) {
+   return res.json({
+     text: 'This lifeline has been used already.'
+   })
+  }
+
+  callAFriendUsed = true;
+
+  const doesFriendKnowAnswer = Math.random() < 0.75;
+  const question = questions[goodAnswers];
+
+  res.json({
+    text: doesFriendKnowAnswer ? `Hmmm i think correct answer is ${question.answers[question.correctAnswer]}` : `Hmmm i can't help You, do it on Your own risk mate...`
+  })
+})
+
 
 }
 
