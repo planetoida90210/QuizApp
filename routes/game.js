@@ -122,6 +122,16 @@ answersCopy.splice(~~(Math.random() * answersCopy.length), 1);
 })
 
 app.get('/help/audience', (req, res) => {
+
+  if(askTheAudienceUsed) {
+    return res.json({
+      text: 'This lifeline has been used already.'
+    })
+   }
+ 
+   askTheAudienceUsed = true;
+
+
   const chart = [9,21,25,45];
 
   for(let i = chart.length -1; i > 0; i--){
